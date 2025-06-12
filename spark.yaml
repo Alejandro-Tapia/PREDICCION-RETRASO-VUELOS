@@ -1,0 +1,193 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-master
+  template:
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      containers:
+      - name: spark-master
+        image: bde2020/spark-master:3.2.1-hadoop3.2
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        - containerPort: 9001
+        env:
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+        volumeMounts:
+        - name: spark-volume
+          mountPath: /practica_creativa
+      volumes:
+      - name: spark-volume
+        hostPath:
+          path: /practica_creativa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-master-service
+spec:
+  selector:
+    app: spark-master
+  ports:
+    - name: spark-port-7077
+      protocol: TCP
+      port: 7077
+      targetPort: 7077
+    - name: spark-port-8080
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: spark-port-9001
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-worker-1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spark-worker-1
+  template:
+    metadata:
+      labels:
+        app: spark-worker-1
+    spec:
+      containers:
+      - name: spark-worker-1
+        image: bde2020/spark-worker:3.2.1-hadoop3.2
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+        volumeMounts:
+        - name: spark-volume
+          mountPath: /practica_creativa
+      volumes:
+      - name: spark-volume
+        hostPath:
+          path: /practica_creativa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-worker-1-service
+spec:
+  selector:
+    app: spark-worker-1
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-worker-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spark-worker-2
+  template:
+    metadata:
+      labels:
+        app: spark-worker-2
+    spec:
+      containers:
+      - name: spark-worker-2
+        image: bde2020/spark-worker:3.2.1-hadoop3.2
+        ports:
+        - containerPort: 8081
+        env:
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+        volumeMounts:
+        - name: spark-volume
+          mountPath: /practica_creativa
+      volumes:
+      - name: spark-volume
+        hostPath:
+          path: /practica_creativa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-worker-2-service
+spec:
+  selector:
+    app: spark-worker-2
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8081
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-submit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-submit
+  template:
+    metadata:
+      labels:
+        app: spark-submit
+    spec:
+      containers:
+      - name: spark-submit
+        image: bde2020/spark-submit:3.2.1-hadoop3.2
+        ports:
+        - containerPort: 4040
+        env:
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+        command:
+          - /spark/bin/spark-submit
+          - --conf
+          - spark.kafka.bootstrap.servers=kafka:9092
+          - --packages
+          - org.mongodb.spark:mongo-spark-connector_2.12:10.4.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.2.1
+          - --class
+          - es.upm.dit.ging.predictor.MakePrediction
+          - --master
+          - spark://spark-master:7077
+          - practica_creativa/flight_prediction/target/scala-2.12/flight_prediction_2.12-0.1.jar
+        volumeMounts:
+        - name: spark-volume
+          mountPath: /practica_creativa
+      volumes:
+      - name: spark-volume
+        hostPath:
+          path: /practica_creativa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-submit-service
+spec:
+  selector:
+    app: spark-submit
+  ports:
+    - protocol: TCP
+      port: 4040
+      targetPort: 4040
+  type: ClusterIP

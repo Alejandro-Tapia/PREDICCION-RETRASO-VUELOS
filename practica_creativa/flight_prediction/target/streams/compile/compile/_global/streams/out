@@ -1,0 +1,5 @@
+[0m[[0m[31merror[0m] [0m[0m/home/mario.gutierrezd/practica_creativa/flight_prediction/src/main/scala/es/upm/dit/ging/predictor/MakePrediction.scala:176:8: value save is not a member of org.apache.spark.sql.streaming.DataStreamWriter[org.apache.spark.sql.Row][0m
+[0m[[0m[31merror[0m] [0m[0mpossible cause: maybe a semicolon is missing before `value save'?[0m
+[0m[[0m[31merror[0m] [0m[0m      .save("red-ibdn://hadoop-namenode:8020/user/spark/predictions")[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
