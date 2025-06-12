@@ -32,8 +32,7 @@ Para empezar, necesitas construir las imágenes Docker necesarias. Sigue estos p
 
 Tambien puedes utilizar estas imagenes ya creadas.
 
-![Captura desde 2025-06-12 12-23-55](https://github.com/user-attachments/assets/db89ff11-e3a5-43c3-a3d4-e371ef3b02d9)
-
+![RUTA DE IMAGENES](./imagenes_docker.png)
 
 ---
 
@@ -47,8 +46,7 @@ Una vez que tus imágenes estén construidas, puedes crear y levantar los conten
     ```
     Esto creará y arrancará tus contenedores en segundo plano.
 
-![Captura desde 2025-06-12 12-23-05](https://github.com/user-attachments/assets/4e4d02b6-1d6b-4750-b8cf-a6444bd5945c)
-
+![RESPUESTA DOCKER COMPOSE UP](./docker.png)
 
 * Para verificar que los contenedores se han creado correctamente, ejecuta:
     ```bash
