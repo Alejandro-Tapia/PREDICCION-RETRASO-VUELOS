@@ -65,8 +65,7 @@ Ahora, verifica que todos los componentes estén funcionando correctamente.
 ### FLASK:
 * Accede a la ruta `http://localhost:5001/flights/delays/predict_kafka` y aquí puedes realizar las predicciones con los valores que desees.
 
-![Captura desde 2025-06-12 12-30-32](https://github.com/user-attachments/assets/b1af0aae-f7d5-47c5-826d-fed13abe144d)
-
+(./flask.png)
 ### SPARK:
 * Accedemos a la ruta `http://localhost:8080` y comprobamos que tenemos dos workers y un master.
 * Nos debería aparecer algo similar a esto:
